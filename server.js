@@ -9,7 +9,8 @@ const express = require("express");
 // init app
 const app = express();
 
-
+const helmet = require("helmet"); 
+const cors = require("cors");
 
 // its important to read the body
 app.use(express.json()); //JSON من body
@@ -18,7 +19,7 @@ app.use(express.urlencoded({extended : false}))// عشان البيانات ال
 
 
 //helmet
-app.use(helmet())
+app.use(helmet()); 
 
 // cors policy
 app.use(cors())
@@ -53,7 +54,6 @@ const imagesPath = require('./Routes/image')
 
 const logger = require("./middlewares/logger");
 const {errHandler404 , errHandler500} = require("./middlewares/errors");
-const { default: helmet } = require("helmet");
 
 
 
