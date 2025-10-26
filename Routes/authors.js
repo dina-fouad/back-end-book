@@ -2,13 +2,20 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const author = require("../models/authors");
-const verifyToken = require("../middlewares/verifyToken")
+const verifyToken = require("../middlewares/verifyToken");
 
-//show all authors
+//show all authors + pagination
 router.get("/", async (req, res) => {
+  let { pageNum } = req.query; // 1//2
+  let otherPages = 2; //ثابت
+
   try {
-    const authors = await author.find();
-    res.send(authors);
+    const authors = await author
+      .find()
+      .skip((pageNum - 1) * otherPages)
+      .limit(otherPages);
+    res.send(authors); //skip  كم كاتب ما رح يعرض/// limit 2 =>رح يجيب الكاتب الثالث والرابع //
+    // عرض كل مؤلفين تنين في صفحة حسب رقم الصفحة
   } catch (error) {
     return res.status(500).send(error);
   }
@@ -31,9 +38,11 @@ router.get("/:authorId", async (req, res) => {
 });
 
 //create a new author/only admin
-router.post("/", verifyToken ,async (req, res) => {
-   if(!req.user.isAdmin){
-    return res.status(403).send({message : "this user not allowed , only admin"})
+router.post("/", verifyToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(403)
+      .send({ message: "this user not allowed , only admin" });
   }
 
   const { error } = validationCreateAuthor(req.body);
@@ -57,10 +66,11 @@ router.post("/", verifyToken ,async (req, res) => {
 });
 
 // update a book/only admin
-router.put("/:authorId", verifyToken,async (req, res) => {
-
-    if(!req.user.isAdmin){
-    return res.status(403).send({message : "this user not allowed , only admin"})
+router.put("/:authorId", verifyToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(403)
+      .send({ message: "this user not allowed , only admin" });
   }
 
   const id = req.params.authorId;
@@ -88,9 +98,11 @@ router.put("/:authorId", verifyToken,async (req, res) => {
 });
 
 // delete a book/only admin
-router.delete("/:authorId",verifyToken, async (req, res) => {
-     if(!req.user.isAdmin){
-    return res.status(403).send({message : "this user not allowed , only admin"})
+router.delete("/:authorId", verifyToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res
+      .status(403)
+      .send({ message: "this user not allowed , only admin" });
   }
   const id = req.params.authorId;
   try {

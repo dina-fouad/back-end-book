@@ -11,6 +11,11 @@ const app = express();
 
 // its important to read the body
 app.use(express.json()); //JSON من body
+// reset passowrd middleware
+app.use(express.urlencoded({extended : false}))// عشان البيانات الي في الفورم ما رح يفهمها الاكسبرس بستخدم مدلوير
+
+
+
 
 // secret file & private key
 const dotenv = require("dotenv")
@@ -30,14 +35,20 @@ mongoose
   });
 
 
-
+//Routes
 const booksBath = require("./Routes/books");
 const authorBath = require("./Routes/authors");
 const usersBath = require("./Routes/users")
 const authBath = require("./Routes/auth")
+const passwordPath = require("./Routes/password")
+const imagesPath = require('./Routes/image')
+
+
 
 const logger = require("./middlewares/logger");
 const {errHandler404 , errHandler500} = require("./middlewares/errors")
+
+
 
 
 //عمل middleware باستخدام next ويجب وضعها باول شيء في middleware 
@@ -46,9 +57,11 @@ app.use(logger)// للانتقال الى middleware التي تليها
               //  next middleware => 
 
 //Routes/middleware
+app.use("/password" , passwordPath)
 app.use("/api/auth" , authBath)
 app.use("/api/users" , usersBath)
 app.use("/api/books", booksBath);
+app.use("/api/images", imagesPath);
 app.use("/api/authors", authorBath);// في حال وجود خطأ يتم ارسالها الى error handler middlewares
 
 
