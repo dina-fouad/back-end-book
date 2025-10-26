@@ -6,12 +6,13 @@ const Joi = require("joi");
 const user = require("../models/users");
 const bcrypt = require("bcryptjs"); //تشفير الباسوورد
 const jwt = require("jsonwebtoken");
+const passwordComplexity = require('joi-password-complexity');
 
 // register a new user
 router.post("/register", async (req, res) => {
   const { error } = validationRegisterUser(req.body);
   if (error) {
-    return res.status(400).send(error);
+    return res.status(400).json({msg : error.details[0].message});
   }
 
   let user1 = await user.findOne({ email: req.body.email }); // برجع يا اما null او obj
@@ -93,7 +94,7 @@ function validationRegisterUser(obj) {
 
     username: Joi.string().trim().min(3).max(400).required(),
 
-    password: Joi.string().trim().min(6).required(),
+    password: passwordComplexity().required(),
 
  
   });
@@ -106,7 +107,7 @@ function validationLoginUser(obj) {
   const schema = Joi.object({
     email: Joi.string().max(300).min(2).trim().email().required(),
 
-    password: Joi.string().trim().min(6).required(),
+    password: passwordComplexity().required(),
   });
 
   return schema.validate(obj);

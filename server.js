@@ -2,6 +2,8 @@
 //for running code => npx nodemon server.js
 // using joi libtary for validation  => npm install joi
 // secret links  => npm i dotenv + make a file .env
+// helmet => اHelp secure Express apps by setting HTTP response headers
+// cors => للسماح لل react بتواصل مع server// للسماح لدومين معين او اي دومين للتعامل مع السيرفر
 const express = require("express");
 
 // init app
@@ -15,7 +17,11 @@ app.use(express.json()); //JSON من body
 app.use(express.urlencoded({extended : false}))// عشان البيانات الي في الفورم ما رح يفهمها الاكسبرس بستخدم مدلوير
 
 
+//helmet
+app.use(helmet())
 
+// cors policy
+app.use(cors())
 
 // secret file & private key
 const dotenv = require("dotenv")
@@ -46,7 +52,8 @@ const imagesPath = require('./Routes/image')
 
 
 const logger = require("./middlewares/logger");
-const {errHandler404 , errHandler500} = require("./middlewares/errors")
+const {errHandler404 , errHandler500} = require("./middlewares/errors");
+const { default: helmet } = require("helmet");
 
 
 

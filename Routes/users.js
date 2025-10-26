@@ -4,6 +4,7 @@ const Joi = require("joi");
 const user = require("../models/users");
 const bcrypt = require("bcryptjs");
 const verifyToken = require("../middlewares/verifyToken");
+const passwordComplexity = require('joi-password-complexity')
 
 // update user
 router.put("/:id", verifyToken, async (req, res) => {
@@ -112,7 +113,7 @@ function validationUpdateUser(obj) {
   const schema = Joi.object({
     email: Joi.string().max(300).min(2).trim().email(),
     username: Joi.string().trim().min(3).max(400),
-    password: Joi.string().trim().min(6),
+    password: passwordComplexity().require(),
   });
 
   return schema.validate(obj);
