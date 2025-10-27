@@ -5,7 +5,9 @@
 // helmet => اHelp secure Express apps by setting HTTP response headers
 // cors => للسماح لل react بتواصل مع server// للسماح لدومين معين او اي دومين للتعامل مع السيرفر
 const express = require("express");
-
+// secret file & private key
+const dotenv = require("dotenv")
+dotenv.config()
 // init app
 const app = express();
 
@@ -24,9 +26,7 @@ app.use(helmet());
 // cors policy
 app.use(cors())
 
-// secret file & private key
-const dotenv = require("dotenv")
-dotenv.config()
+console.log("MONGO_URL on Render:", process.env.MONGO_URL);
 
 // connection between express & mongodb (with database)
 const mongoose = require("mongoose");
